@@ -56,7 +56,7 @@ fn main() {
 	reg.write(to_utf16le('[${registry_path}]\r\n'))!
 
 	for registry_name, cursor_file in cursor_files {
-		cursor := os.join_path(cursor_path, cursor_name, cursor_file)
+		cursor := os.join_path(cursor_path, cursor_name, cursor_file).replace(r'\', r'\\')
 		if os.exists(cursor) {
 			reg.write(to_utf16le('"${registry_name}"="${cursor}"\r\n'))!
 		} else {
