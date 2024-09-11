@@ -1,0 +1,23 @@
+name: Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: 'Build'
+    runs-on: 'windows-latest'
+    steps:
+      - name: Install V
+        uses: vlang/setup-v@v1.4
+        with:
+          check-latest: true
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        run: v -prod .
+      - name: Publish release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows_cursor_change_reg_file_generator.exe
+          path: windows_cursor_change_reg_file_generator.exe
