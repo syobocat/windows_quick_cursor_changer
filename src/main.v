@@ -21,14 +21,14 @@ fn main() {
 	settings_file := os.args[1]
 
 	if !os.exists(settings_file) {
-		eprintln('その設定ファイルは存在しないよ！')
+		eprintln('設定ファイル ${settings_file} は存在しないよ！')
 		print('[ENTERキーを押して終了]')
 		os.get_line()
 		exit(1)
 	}
 
 	settings := toml.parse_file(settings_file) or {
-		eprintln('設定ファイルがおかしいよ！')
+		eprintln('設定ファイル ${settings_file} がおかしいよ！')
 		print('[ENTERキーを押して終了]')
 		os.get_line()
 		exit(1)
