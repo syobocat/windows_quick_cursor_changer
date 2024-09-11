@@ -1,0 +1,22 @@
+# カーソルフォルダを置いているフォルダ　通常は変更する必要なし
+path = '''C:\Windows'''
+
+# カーソルが入っているフォルダ名
+name = "Cursors"
+
+# カーソルファイルの名前
+arrow       = "aero_arrow.cur"   # 「通常の選択」
+help        = "aero_helpsel.cur" # 「ヘルプの選択」
+appstarting = "aero_working.ani" # 「バックグラウンドで作業中」
+wait        = "aero_busy.ani"    # 「待ち状態」
+crosshair   = "cross_rm.cur"     # 「領域選択」
+ibeam       = "beam_rm.cur"      # 「テキスト選択」
+nwpen       = "aero_pen.cur"     # 「手書き」
+no          = "aero_unavail.cur" # 「利用不可」
+sizens      = "aero_ns.cur"      # 「上下に拡大/縮小」
+sizewe      = "aero_ew.cur"      # 「左右に拡大/縮小」
+sizenwse    = "aero_nwse.cur"    # 「斜めに拡大/縮小 1」
+sizenesw    = "aero_nesw.cur"    # 「斜めに拡大/縮小 2」
+sizeall     = "aero_move.cur"    # 「移動」
+uparrow     = "aero_up.cur"      # 「代替選択」
+hand        = "aero_link.cur"    # 「リンクの選択」
