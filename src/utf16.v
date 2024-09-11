@@ -8,7 +8,6 @@ fn to_utf16le(s string) []u8 {
 	mut utf16 := []u8{}
 	for i in 0 .. utf8.len(s) {
 		index := u16(utf8.get_uchar('${utf8.raw_index(s, i)}', 0))
-		println('${utf8.raw_index(s, i)}のコードポイントは${index}=${index.hex()}')
 		if index < 0x10000 {
 			utf16 << binary.little_endian_get_u16(index)
 		} else {
