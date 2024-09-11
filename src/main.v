@@ -51,14 +51,14 @@ fn main() {
 		exit(1)
 	}
 
-	reg.writeln(registry_header)!
-	reg.writeln('')!
-	reg.writeln('[${registry_path}]')!
+	reg.write([u8(0xFF), u8(0xFE)])! // UTF-16LE
+	reg.write(to_utf16le('${registry_header}\r\n\r\n'))!
+	reg.write(to_utf16le('[${registry_path}]\r\n'))!
 
 	for registry_name, cursor_file in cursor_files {
 		cursor := os.join_path(cursor_path, cursor_name, cursor_file)
 		if os.exists(cursor) {
-			reg.writeln('"${registry_name}"="${cursor}"')!
+			reg.write(to_utf16le('"${registry_name}"="${cursor}"\r\n'))!
 		} else {
 			eprintln('[注意!] カーソルファイル ${cursor} は存在しません！')
 		}
@@ -66,7 +66,7 @@ fn main() {
 
 	reg.close()
 
-	println('完了しました。「クリックでカーソル適用.reg」ファイルを開くとカーソルが適用されます。')
+	println('完了しました。「クリックでカーソル適用.reg」ファイルを開いた後、再起動や再ログインをするとカーソルが適用されます。')
 	print('[ENTERキーを押して終了]')
 
 	os.get_line()
