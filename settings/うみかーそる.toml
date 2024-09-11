@@ -1,0 +1,22 @@
+# カーソルフォルダを置いているフォルダ　通常は変更する必要なし
+path = '''C:\Windows\Cursors'''
+
+# カーソルが入っているフォルダ名
+name = "UmiCursor"
+
+# カーソルファイルの名前
+arrow       = "001_Arrow.ani"       # 「通常の選択」
+help        = "002_Help.ani"        # 「ヘルプの選択」
+appstarting = "003_Appstarting.ani" # 「バックグラウンドで作業中」
+wait        = "004_Wait.ani"        # 「待ち状態」
+crosshair   = "005_CrossHair.ani"   # 「領域選択」
+ibeam       = "006_IBeam.ani"       # 「テキスト選択」
+nwpen       = "007_NWPen.ani"       # 「手書き」
+no          = "008_No.ani"          # 「利用不可」
+sizens      = "009_SizeNS.ani"      # 「上下に拡大/縮小」
+sizewe      = "010_SizeWE.ani"      # 「左右に拡大/縮小」
+sizenwse    = "011_SizeNWSE.ani"    # 「斜めに拡大/縮小 1」
+sizenesw    = "012_SizeNESW.ani"    # 「斜めに拡大/縮小 2」
+sizeall     = "013_SizeAll.ani"     # 「移動」
+uparrow     = "014_UpArrow.ani"     # 「代替選択」
+hand        = "015_Hand.ani"        # 「リンクの選択」

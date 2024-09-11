@@ -1,0 +1,22 @@
+# カーソルフォルダを置いているフォルダ　通常は変更する必要なし
+path = '''C:\Windows\Cursors'''
+
+# カーソルが入っているフォルダ名
+name = "レイちゃんカーソル"
+
+# カーソルファイルの名前
+arrow       = "Rei_通常の選択.ani"               # 「通常の選択」
+help        = "Rei_ヘルプの選択.ani"             # 「ヘルプの選択」
+appstarting = "Rei_バッググラウンドで作業中.ani" # 「バックグラウンドで作業中」
+wait        = "Rei_待ち状態.ani"                 # 「待ち状態」
+crosshair   = "Rei_領域選択.ani"                 # 「領域選択」
+ibeam       = "Rei_テキスト選択.ani"             # 「テキスト選択」
+nwpen       = "Rei_手書き.ani"                   # 「手書き」
+no          = "Rei_利用不可.ani"                 # 「利用不可」
+sizens      = "Rei_上下に拡大・縮小.ani"         # 「上下に拡大/縮小」
+sizewe      = "Rei_左右に拡大・縮小.ani"         # 「左右に拡大/縮小」
+sizenwse    = "Rei_斜めに拡大・縮小1.ani"        # 「斜めに拡大/縮小 1」
+sizenesw    = "Rei_斜めに拡大・縮小2.ani"        # 「斜めに拡大/縮小 2」
+sizeall     = "Rei_移動.ani"                     # 「移動」
+uparrow     = "Rei_代替選択.ani"                 # 「代替選択」
+hand        = "リンクの選択(人物、場所込み).ani" # 「リンクの選択」
