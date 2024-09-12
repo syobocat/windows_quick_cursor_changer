@@ -1,5 +1,7 @@
 module main
 
+import builtin.wchar
+
 #include <windows.h>
 
 enum KeyHandles as u32 {
@@ -51,7 +53,7 @@ fn C.RegSetValueExW(hKey voidptr, lpValueName &u16, Reserved u32, dwType u32, co
 
 fn open_registry(key KeyHandles, subkey string, mode RegAsm) !Key {
 	mut hkey := unsafe { nil }
-	status := C.RegOpenKeyExW(usize(key), subkey.to_wide(), 0, u32(mode), &hkey)
+	status := C.RegOpenKeyExW(u32(key), subkey.to_wide(), 0, u32(mode), &hkey)
 	if status != 0 {
 		return error('レジストリキーのオープンに失敗しました: コード${status}')
 	}
@@ -60,8 +62,13 @@ fn open_registry(key KeyHandles, subkey string, mode RegAsm) !Key {
 }
 
 fn (key Key) set_sz(name string, value string) ! {
-	value_u16 := '${value}\0'.to_wide()
-	status := C.RegSetValueExW(key, name.to_wide(), 0, u32(RegType.sz), value_u16, sizeof(value_u16))
+	value_nullend := '${value}\0'
+	mut length := 0
+	unsafe {
+		length = wchar.length_in_bytes(wchar.from_string(value_nullend))
+	}
+	status := C.RegSetValueExW(key, name.to_wide(), 0, u32(RegType.sz), value_nullend.to_wide(),
+		length)
 	if status != 0 {
 		return error('レジストリキーの設定に失敗しました: コード${status}')
 	}

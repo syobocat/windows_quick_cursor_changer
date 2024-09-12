@@ -42,7 +42,7 @@ fn main() {
 
 	registry_key := open_registry(.hkey_current_user, r'Control Panel\Cursors', .key_write)!
 	for registry_name, cursor_file in cursor_files {
-		cursor := os.join_path(cursor_path, cursor_name, cursor_file).replace(r'\', r'\\')
+		cursor := os.join_path(cursor_path, cursor_name, cursor_file)
 		registry_key.set_sz(registry_name, cursor)!
 	}
 	registry_key.close()!
