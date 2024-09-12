@@ -48,13 +48,20 @@ fn C.RegOpenKeyExW(hKey voidptr, lpSubKey &wchar.Character, ulOptions u32, samDe
 
 fn C.RegSetValueExW(hKey voidptr, lpValueName &wchar.Character, Reserved u32, dwType u32, const_lpData &u8, cbData u32) i32
 
-fn set_registry_sz(key KeyHandles, subkey string, name string, value string) {
+fn set_registry_sz(key KeyHandles, subkey string, name string, value string) ! {
 	handle := voidptr(u32(key))
 	value_wchar := wchar.from_string('${value}\0')
 	mut hkey := unsafe { nil }
-	C.RegOpenKeyExW(handle, wchar.from_string(subkey), 0, u32(RegAsm.key_write), hkey)
+	open_status := C.RegOpenKeyExW(handle, wchar.from_string(subkey), 0, u32(RegAsm.key_write),
+		hkey)
+	if open_status != 0 {
+		return error('レジストリキーのオープンに失敗しました: コード${open_status}')
+	}
 	unsafe {
-		C.RegSetValueExW(hkey, wchar.from_string(name), 0, u32(RegType.sz), value_wchar,
-			wchar.length_in_bytes(value_wchar))
+		set_status := C.RegSetValueExW(hkey, wchar.from_string(name), 0, u32(RegType.sz),
+			value_wchar, wchar.length_in_bytes(value_wchar))
+		if set_status != 0 {
+			return error('レジストリキーの設定に失敗しました: コード${set_status}')
+		}
 	}
 }

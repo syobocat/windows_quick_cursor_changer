@@ -42,7 +42,7 @@ fn main() {
 
 	for registry_name, cursor_file in cursor_files {
 		cursor := os.join_path(cursor_path, cursor_name, cursor_file).replace(r'\', r'\\')
-		set_registry_sz(.hkey_current_user, r'Control Panel\Cursors', registry_name, cursor)
+		set_registry_sz(.hkey_current_user, r'Control Panel\Cursors', registry_name, cursor)!
 	}
 
 	println('完了しました。再起動や再ログインをするとカーソルが適用されます。')
