@@ -9,26 +9,17 @@ const cursors = ['Arrow', 'Help', 'AppStarting', 'Wait', 'Crosshair', 'IBeam', '
 fn main() {
 	// バリデーション
 	if os.args.len < 2 {
-		println('設定ファイルを.exeファイルにドラッグ&ドロップしてね')
-		print('[ENTERキーを押して終了]')
-		os.get_line()
-		exit(0)
+		graceful_exit('設定ファイルを.exeファイルにドラッグ&ドロップしてね')
 	}
 
 	settings_file := os.args[1]
 
 	if !os.exists(settings_file) {
-		eprintln('設定ファイル ${settings_file} は存在しないよ！')
-		print('[ENTERキーを押して終了]')
-		os.get_line()
-		exit(1)
+		something_happened('設定ファイル ${settings_file} は存在しないよ！')
 	}
 
 	settings := toml.parse_file(settings_file) or {
-		eprintln('設定ファイル ${settings_file} がおかしいよ！')
-		print('[ENTERキーを押して終了]')
-		os.get_line()
-		exit(1)
+		something_happened('設定ファイル ${settings_file} がおかしいよ！')
 	}
 
 	// ファイル読み込み
@@ -40,15 +31,30 @@ fn main() {
 		cursor_files[cursor] = settings.value(cursor.to_lower()).default_to('').string()
 	}
 
-	registry_key := open_registry(.hkey_current_user, r'Control Panel\Cursors', .key_write)!
+	registry_key := open_registry(.hkey_current_user, r'Control Panel\Cursors', .key_write) or {
+		something_happened(err)
+	}
 	for registry_name, cursor_file in cursor_files {
 		cursor := os.join_path(cursor_path, cursor_name, cursor_file)
-		registry_key.set_sz(registry_name, cursor)!
+		registry_key.set_sz(registry_name, cursor) or { something_happened(err) }
 	}
-	registry_key.close()!
+	registry_key.close() or { something_happened(err) }
 
-	println('完了しました。再起動や再ログインをするとカーソルが適用されます。')
+	update_cursor() or { something_happened(err) }
+
+	graceful_exit('完了しました！')
+}
+
+fn something_happened(message string) {
+	eprintln(message)
 	print('[ENTERキーを押して終了]')
-
 	os.get_line()
+	exit(1)
+}
+
+fn graceful_exit(message string) {
+	println(message)
+	print('[ENTERキーを押して終了]')
+	os.get_line()
+	exit(0)
 }
