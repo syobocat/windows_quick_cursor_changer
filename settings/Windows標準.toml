@@ -1,16 +1,21 @@
+# システムカーソル
+scheme = 2
+
 # カーソルフォルダを置いているフォルダ　通常は変更する必要なし
 path = '''C:\Windows'''
 
 # カーソルが入っているフォルダ名
 name = "Cursors"
 
+cursor_name = "Windows 標準" # フォルダ名とカーソル名を別にしたい場合
+
 # カーソルファイルの名前
 arrow       = "aero_arrow.cur"   # 「通常の選択」
 help        = "aero_helpsel.cur" # 「ヘルプの選択」
 appstarting = "aero_working.ani" # 「バックグラウンドで作業中」
 wait        = "aero_busy.ani"    # 「待ち状態」
-crosshair   = "cross_rm.cur"     # 「領域選択」
-ibeam       = "beam_rm.cur"      # 「テキスト選択」
+crosshair   = ":NULL"            # 「領域選択」
+ibeam       = ":NULL"            # 「テキスト選択」
 nwpen       = "aero_pen.cur"     # 「手書き」
 no          = "aero_unavail.cur" # 「利用不可」
 sizens      = "aero_ns.cur"      # 「上下に拡大/縮小」

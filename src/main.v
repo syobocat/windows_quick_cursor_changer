@@ -29,8 +29,10 @@ fn main() {
 	}
 
 	// ファイル読み込み
+	cursor_scheme := settings.value('scheme').default_to(1).u64()
 	cursor_path := settings.value('path').default_to(r'C:\Windows\Cursors').string()
-	cursor_name := settings.value('name').default_to('').string()
+	cursor_dir := settings.value('name').default_to('').string()
+	cursor_name := settings.value('cursor_name').default_to(cursor_dir).string()
 
 	mut cursor_files := map[string]string{}
 	for cursor in cursors {
@@ -48,21 +50,30 @@ fn main() {
 		wait()
 		exit(1)
 	}
-	registry_key.set_dword('Scheme Source', 1) or {
+	registry_key.set_dword('Scheme Source', u32(cursor_scheme)) or {
 		eprintln(err)
 		wait()
 		exit(1)
 	}
 	for registry_name, cursor_file in cursor_files {
-		cursor := os.join_path(cursor_path, cursor_name, cursor_file)
-		if os.is_file(cursor) {
-			registry_key.set_sz(registry_name, cursor) or {
+		if cursor_file == ':NULL' {
+			// :NULLと指定するとレジストリに空文字を登録
+			registry_key.set_sz(registry_name, '') or {
 				eprintln(err)
 				wait()
 				exit(1)
 			}
 		} else {
-			eprintln('[注意!] カーソルファイル ${cursor} は存在しません！')
+			cursor := os.join_path(cursor_path, cursor_dir, cursor_file)
+			if os.is_file(cursor) {
+				registry_key.set_sz(registry_name, cursor) or {
+					eprintln(err)
+					wait()
+					exit(1)
+				}
+			} else {
+				eprintln('[注意!] カーソルファイル ${cursor} は存在しません！')
+			}
 		}
 	}
 	registry_key.close() or {

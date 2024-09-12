@@ -75,8 +75,7 @@ fn (key Key) set_sz(name string, value string) ! {
 }
 
 fn (key Key) set_dword(name string, value u32) ! {
-	status := C.RegSetValueExW(key, name.to_wide(), 0, u32(RegType.dword), &value,
-		4)
+	status := C.RegSetValueExW(key, name.to_wide(), 0, u32(RegType.dword), &value, 4)
 	if status != 0 {
 		return error('レジストリキーの設定に失敗しました: コード${status}')
 	}
