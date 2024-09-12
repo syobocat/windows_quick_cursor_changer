@@ -72,11 +72,7 @@ fn main() {
 	}
 
 	// カーソルを更新
-	update_cursor() or {
-		eprintln(err)
-		wait()
-		exit(1)
-	}
+	update_cursor()
 
 	println('完了しました！')
 	wait()
