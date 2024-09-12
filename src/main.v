@@ -3,9 +3,6 @@ module main
 import os
 import toml
 
-const registry_header = 'Windows Registry Editor Version 5.00'
-const registry_path = r'HKEY_CURRENT_USER\Control Panel\Cursors'
-
 const cursors = ['Arrow', 'Help', 'AppStarting', 'Wait', 'Crosshair', 'IBeam', 'NWPen', 'No',
 	'SizeNS', 'SizeWE', 'SizeNWSE', 'SizeNESW', 'SizeAll', 'UpArrow', 'Hand']
 
@@ -43,30 +40,14 @@ fn main() {
 		cursor_files[cursor] = settings.value(cursor.to_lower()).default_to('').string()
 	}
 
-	// レジストリファイル作成
-	os.rm('クリックでカーソル適用.reg') or {}
-	mut reg := os.create('クリックでカーソル適用.reg') or {
-		eprintln('レジストリファイルの作成に失敗しました')
-		os.get_line()
-		exit(1)
-	}
-
-	reg.write([u8(0xFF), u8(0xFE)])! // UTF-16LE
-	reg.write(to_utf16le('${registry_header}\r\n\r\n'))!
-	reg.write(to_utf16le('[${registry_path}]\r\n'))!
-
+	registry_key := open_registry(.hkey_current_user, r'Control Panel\Cursors', .key_write)!
 	for registry_name, cursor_file in cursor_files {
-		cursor := os.join_path(cursor_path, cursor_name, cursor_file).replace(r'\', r'\\')
-		if os.exists(cursor) {
-			reg.write(to_utf16le('"${registry_name}"="${cursor}"\r\n'))!
-		} else {
-			eprintln('[注意!] カーソルファイル ${cursor} は存在しません！')
-		}
+		cursor := os.join_path(cursor_path, cursor_name, cursor_file)
+		registry_key.set_sz(registry_name, cursor)!
 	}
+	registry_key.close()!
 
-	reg.close()
-
-	println('完了しました。「クリックでカーソル適用.reg」ファイルを開いた後、再起動や再ログインをするとカーソルが適用されます。')
+	println('完了しました。再起動や再ログインをするとカーソルが適用されます。')
 	print('[ENTERキーを押して終了]')
 
 	os.get_line()
