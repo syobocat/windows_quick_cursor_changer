@@ -44,9 +44,9 @@ enum RegType as u32 {
 	qword                      = 11
 }
 
-fn C.RegOpenKeyExW(hKey voidptr, lpSubKey &wchar.Character, ulOptions u32, samDesired u32, phkResult &voidptr) LONG
+fn C.RegOpenKeyExW(hKey voidptr, lpSubKey &wchar.Character, ulOptions u32, samDesired u32, phkResult &voidptr) i32
 
-fn C.RegSetValueExW(hKey voidptr, lpValueName &wchar.Character, Reserved u32, dwType u32, const_lpData &u8, cbData u32) LONG
+fn C.RegSetValueExW(hKey voidptr, lpValueName &wchar.Character, Reserved u32, dwType u32, const_lpData &u8, cbData u32) i32
 
 fn set_registry_sz(key KeyHandles, subkey string, name string, value string) {
 	handle := voidptr(u32(key))
