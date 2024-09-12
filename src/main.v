@@ -9,17 +9,23 @@ const cursors = ['Arrow', 'Help', 'AppStarting', 'Wait', 'Crosshair', 'IBeam', '
 fn main() {
 	// バリデーション
 	if os.args.len < 2 {
-		graceful_exit('設定ファイルを.exeファイルにドラッグ&ドロップしてね')
+		println('設定ファイルを.exeファイルにドラッグ&ドロップしてね')
+		wait()
+		exit(0)
 	}
 
 	settings_file := os.args[1]
 
 	if !os.exists(settings_file) {
-		something_happened('設定ファイル ${settings_file} は存在しないよ！')
+		eprintln('設定ファイル ${settings_file} は存在しないよ！')
+		wait()
+		exit(1)
 	}
 
 	settings := toml.parse_file(settings_file) or {
-		something_happened('設定ファイル ${settings_file} がおかしいよ！')
+		eprintln('設定ファイル ${settings_file} がおかしいよ！')
+		wait()
+		exit(1)
 	}
 
 	// ファイル読み込み
@@ -33,38 +39,50 @@ fn main() {
 
 	// レジストリ書き換え
 	registry_key := open_registry(.hkey_current_user, r'Control Panel\Cursors', .key_write) or {
-		something_happened('${err}')
+		eprintln(err)
+		wait()
+		exit(1)
 	}
-	registry_key.set_sz('', cursor_name) or { something_happened('${err}') }
-	registry_key.set_dword('Scheme Source', 1) or { something_happened('${err}') }
+	registry_key.set_sz('', cursor_name) or {
+		eprintln(err)
+		wait()
+		exit(1)
+	}
+	registry_key.set_dword('Scheme Source', 1) or {
+		eprintln(err)
+		wait()
+		exit(1)
+	}
 	for registry_name, cursor_file in cursor_files {
 		cursor := os.join_path(cursor_path, cursor_name, cursor_file)
 		if os.is_file(cursor) {
-			registry_key.set_sz(registry_name, cursor) or { something_happened('${err}') }
+			registry_key.set_sz(registry_name, cursor) or {
+				eprintln(err)
+				wait()
+				exit(1)
+			}
 		} else {
 			eprintln('[注意!] カーソルファイル ${cursor} は存在しません！')
 		}
 	}
-	registry_key.close() or { something_happened('${err}') }
+	registry_key.close() or {
+		eprintln(err)
+		wait()
+		exit(1)
+	}
 
 	// カーソルを更新
-	update_cursor() or { something_happened('${err}') }
+	update_cursor() or {
+		eprintln(err)
+		wait()
+		exit(1)
+	}
 
-	graceful_exit('完了しました！')
+	println('完了しました！')
+	wait()
 }
 
-@[noreturn]
-fn something_happened(message string) {
-	eprintln(message)
+fn wait() {
 	print('[ENTERキーを押して終了]')
 	os.get_line()
-	exit(1)
-}
-
-@[noreturn]
-fn graceful_exit(message string) {
-	println(message)
-	print('[ENTERキーを押して終了]')
-	os.get_line()
-	exit(0)
 }
