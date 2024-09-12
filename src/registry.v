@@ -4,17 +4,17 @@ import builtin.wchar
 
 #include <windows.h>
 
-enum KeyHandles {
-	hkey_classes_root
-	hkey_current_user
-	hkey_local_machine
-	hkey_users
-	hkey_performance_data
-	hkey_current_config
-	hkey_dyn_data
-	hkey_current_user_local_settings
-	hkey_performance_text
-	hkey_performance_nlstext
+enum KeyHandles as u32 {
+	hkey_classes_root                = 0x80000000
+	hkey_current_user                = 0x80000001
+	hkey_local_machine               = 0x80000002
+	hkey_users                       = 0x80000003
+	hkey_performance_data            = 0x80000004
+	hkey_current_config              = 0x80000005
+	hkey_dyn_data                    = 0x80000006
+	hkey_current_user_local_settings = 0x80000007
+	hkey_performance_text            = 0x80000050
+	hkey_performance_nlstext         = 0x80000060
 }
 
 enum RegAsm as u32 {
@@ -49,18 +49,7 @@ fn C.RegOpenKeyExW(hKey voidptr, lpSubKey &wchar.Character, ulOptions u32, samDe
 fn C.RegSetValueExW(hKey voidptr, lpValueName &wchar.Character, Reserved u32, dwType u32, const_lpData &u8, cbData u32) LONG
 
 fn set_registry_sz(key KeyHandles, subkey string, name string, value string) {
-	handle := match key {
-		.hkey_classes_root { voidptr(0x80000000) }
-		.hkey_current_user { voidptr(0x80000001) }
-		.hkey_local_machine { voidptr(0x80000002) }
-		.hkey_users { voidptr(0x80000003) }
-		.hkey_performance_data { voidptr(0x80000004) }
-		.hkey_current_config { voidptr(0x80000005) }
-		.hkey_dyn_data { voidptr(0x80000006) }
-		.hkey_current_user_local_settings { voidptr(0x80000007) }
-		.hkey_performance_text { voidptr(0x80000050) }
-		.hkey_performance_nlstext { voidptr(0x80000060) }
-	}
+	handle := voidptr(u32(key))
 	value_wchar := wchar.from_string('${value}\0')
 	mut hkey := unsafe { nil }
 	C.RegOpenKeyExW(handle, wchar.from_string(subkey), 0, u32(RegAsm.key_write), hkey)
