@@ -44,10 +44,10 @@ enum RegType as u32 {
 
 type Key = voidptr
 
-fn C.RegOpenKeyExW(hKey voidptr, lpSubKey &u16, ulOptions u32, samDesired u32, phkResult &voidptr) i32
-fn C.RegCloseKey(hKey voidptr) i32
+fn C.RegOpenKeyExW(hKey voidptr, lpSubKey &u16, ulOptions u32, samDesired u32, phkResult &voidptr) int
+fn C.RegCloseKey(hKey voidptr) int
 
-fn C.RegSetValueExW(hKey voidptr, lpValueName &u16, Reserved u32, dwType u32, const_lpData &u16, cbData u32) i32
+fn C.RegSetValueExW(hKey voidptr, lpValueName &u16, Reserved u32, dwType u32, const_lpData &u16, cbData u32) int
 
 fn open_registry(key KeyHandles, subkey string) !Key {
 	mut hkey := unsafe { nil }
