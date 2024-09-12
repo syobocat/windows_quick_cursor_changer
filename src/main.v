@@ -32,15 +32,15 @@ fn main() {
 	}
 
 	registry_key := open_registry(.hkey_current_user, r'Control Panel\Cursors', .key_write) or {
-		something_happened(err)
+		something_happened('${err}')
 	}
 	for registry_name, cursor_file in cursor_files {
 		cursor := os.join_path(cursor_path, cursor_name, cursor_file)
-		registry_key.set_sz(registry_name, cursor) or { something_happened(err) }
+		registry_key.set_sz(registry_name, cursor) or { something_happened('${err}') }
 	}
-	registry_key.close() or { something_happened(err) }
+	registry_key.close() or { something_happened('${err}') }
 
-	update_cursor() or { something_happened(err) }
+	update_cursor() or { something_happened('${err}') }
 
 	graceful_exit('完了しました！')
 }
