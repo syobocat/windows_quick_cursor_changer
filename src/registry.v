@@ -49,9 +49,9 @@ fn C.RegCloseKey(hKey voidptr) int
 
 fn C.RegSetValueExW(hKey voidptr, lpValueName &u16, Reserved u32, dwType u32, const_lpData &u16, cbData u32) int
 
-fn open_registry(key KeyHandles, subkey string) !Key {
+fn open_registry(key KeyHandles, subkey string, mode RegAsm) !Key {
 	mut hkey := unsafe { nil }
-	status := C.RegOpenKeyExW(u32(key), subkey.to_wide(), 0, u32(RegAsm.key_write), hkey)
+	status := C.RegOpenKeyExW(usize(key), subkey.to_wide(), 0, u32(mode), hkey)
 	if status != 0 {
 		return error('レジストリキーのオープンに失敗しました: コード${status}')
 	}
