@@ -10,8 +10,7 @@ fn main() {
 	// バリデーション
 	if os.args.len < 2 {
 		println('設定ファイルを.exeファイルにドラッグ&ドロップしてね')
-		print('[ENTERキーを押して終了]')
-		os.get_line()
+		wait()
 		exit(0)
 	}
 
@@ -19,15 +18,13 @@ fn main() {
 
 	if !os.exists(settings_file) {
 		eprintln('設定ファイル ${settings_file} は存在しないよ！')
-		print('[ENTERキーを押して終了]')
-		os.get_line()
+		wait()
 		exit(1)
 	}
 
 	settings := toml.parse_file(settings_file) or {
 		eprintln('設定ファイル ${settings_file} がおかしいよ！')
-		print('[ENTERキーを押して終了]')
-		os.get_line()
+		wait()
 		exit(1)
 	}
 
@@ -40,15 +37,48 @@ fn main() {
 		cursor_files[cursor] = settings.value(cursor.to_lower()).default_to('').string()
 	}
 
-	registry_key := open_registry(.hkey_current_user, r'Control Panel\Cursors', .key_write)!
+	// レジストリ書き換え
+	registry_key := open_registry(.hkey_current_user, r'Control Panel\Cursors', .key_write) or {
+		eprintln(err)
+		wait()
+		exit(1)
+	}
+	registry_key.set_sz('', cursor_name) or {
+		eprintln(err)
+		wait()
+		exit(1)
+	}
+	registry_key.set_dword('Scheme Source', 1) or {
+		eprintln(err)
+		wait()
+		exit(1)
+	}
 	for registry_name, cursor_file in cursor_files {
 		cursor := os.join_path(cursor_path, cursor_name, cursor_file)
-		registry_key.set_sz(registry_name, cursor)!
+		if os.is_file(cursor) {
+			registry_key.set_sz(registry_name, cursor) or {
+				eprintln(err)
+				wait()
+				exit(1)
+			}
+		} else {
+			eprintln('[注意!] カーソルファイル ${cursor} は存在しません！')
+		}
 	}
-	registry_key.close()!
+	registry_key.close() or {
+		eprintln(err)
+		wait()
+		exit(1)
+	}
 
-	println('完了しました。再起動や再ログインをするとカーソルが適用されます。')
+	// カーソルを更新
+	update_cursor()
+
+	println('完了しました！')
+	wait()
+}
+
+fn wait() {
 	print('[ENTERキーを押して終了]')
-
 	os.get_line()
 }
