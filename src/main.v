@@ -31,15 +31,23 @@ fn main() {
 		cursor_files[cursor] = settings.value(cursor.to_lower()).default_to('').string()
 	}
 
+	// レジストリ書き換え
 	registry_key := open_registry(.hkey_current_user, r'Control Panel\Cursors', .key_write) or {
 		something_happened('${err}')
 	}
+	registry_key.set_sz('', cursor_name) or { something_happened('${err}') }
+	registry_key.set_dword('Scheme Source', 1) or { something_happened('${err}') }
 	for registry_name, cursor_file in cursor_files {
 		cursor := os.join_path(cursor_path, cursor_name, cursor_file)
-		registry_key.set_sz(registry_name, cursor) or { something_happened('${err}') }
+		if os.is_file(cursor) {
+			registry_key.set_sz(registry_name, cursor) or { something_happened('${err}') }
+		} else {
+			eprintln('[注意!] カーソルファイル ${cursor} は存在しません！')
+		}
 	}
 	registry_key.close() or { something_happened('${err}') }
 
+	// カーソルを更新
 	update_cursor() or { something_happened('${err}') }
 
 	graceful_exit('完了しました！')

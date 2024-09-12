@@ -49,7 +49,7 @@ type Key = voidptr
 fn C.RegOpenKeyExW(hKey voidptr, lpSubKey &u16, ulOptions u32, samDesired u32, phkResult voidptr) int
 fn C.RegCloseKey(hKey voidptr) int
 
-fn C.RegSetValueExW(hKey voidptr, lpValueName &u16, Reserved u32, dwType u32, const_lpData &u16, cbData u32) int
+fn C.RegSetValueExW(hKey voidptr, lpValueName &u16, Reserved u32, dwType u32, const_lpData voidptr, cbData u32) int
 
 fn open_registry(key KeyHandles, subkey string, mode RegAsm) !Key {
 	mut hkey := unsafe { nil }
@@ -69,6 +69,14 @@ fn (key Key) set_sz(name string, value string) ! {
 	}
 	status := C.RegSetValueExW(key, name.to_wide(), 0, u32(RegType.sz), value_nullend.to_wide(),
 		length)
+	if status != 0 {
+		return error('レジストリキーの設定に失敗しました: コード${status}')
+	}
+}
+
+fn (key Key) set_dword(name string, value u32) ! {
+	status := C.RegSetValueExW(key, name.to_wide(), 0, u32(RegType.dword), &value,
+		4)
 	if status != 0 {
 		return error('レジストリキーの設定に失敗しました: コード${status}')
 	}
