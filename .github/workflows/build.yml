@@ -14,8 +14,6 @@ jobs:
           check-latest: true
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install V libraries
-        run: v install Ddiidev.winreg
       - name: Build
         run: v -prod .
       - name: Publish release artifacts
