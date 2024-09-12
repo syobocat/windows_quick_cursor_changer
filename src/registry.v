@@ -4,33 +4,6 @@ import builtin.wchar
 
 #include <windows.h>
 
-type BYTE = u8
-type DWORD = u32
-type HKEY = voidptr
-type LONG = i32
-type LPCWSTR = &C.wchar_t
-type REGSAM = u32
-
-const read_control = u32(0x00020000)
-const standard_rights_read = read_control
-const standard_rights_write = read_control
-const standard_rights_all = u32(0x001f0000)
-const synchronize = u32(0x00100000)
-const key_query_value = u32(0x0001)
-const key_set_value = u32(0x0002)
-const key_create_sub_key = u32(0x0004)
-const key_enumerate_sub_keys = u32(0x0008)
-const key_notify = u32(0x0010)
-const key_create_link = u32(0x0020)
-// const key_wow64_32key = u32(0x0200)
-// const key_wow64_64key = u32(0x0100)
-// const key_wow64_res = u32(0x0300)
-
-const key_read = (standard_rights_read | key_query_value | key_enumerate_sub_keys | key_notify) & (~synchronize)
-const key_write = (standard_rights_write | key_set_value | key_create_sub_key) & (~synchronize)
-const key_execute = key_read & (~synchronize)
-const key_all_access = (standard_rights_all | key_query_value | key_set_value | key_create_sub_key | key_enumerate_sub_keys | key_notify | key_create_link) & (~synchronize)
-
 enum KeyHandles {
 	hkey_classes_root
 	hkey_current_user
@@ -45,16 +18,15 @@ enum KeyHandles {
 }
 
 enum RegAsm as u32 {
-	key_query_value        = key_query_value
-	key_set_value          = key_set_value
-	key_create_sub_key     = key_create_sub_key
-	key_enumerate_sub_keys = key_enumerate_sub_keys
-	key_notify             = key_notify
-	key_create_link        = key_create_link
-	key_read               = key_read
-	key_write              = key_write
-	key_execute            = key_execute
-	key_all_access         = key_all_access
+	key_query_value        = 0x0001
+	key_set_value          = 0x0002
+	key_create_sub_key     = 0x0004
+	key_enumerate_sub_keys = 0x0008
+	key_notify             = 0x0010
+	key_create_link        = 0x0020
+	key_read               = (0x00020000 | 0x0001 | 0x0008 | 0x0010) & (~0x00100000)
+	key_write              = (0x00020000 | 0x0002 | 0x0004) & (~0x00100000)
+	key_all_access         = (0x001f0000 | 0x0001 | 0x0002 | 0x0004 | 0x0008 | 0x0010 | 0x0020) & (~0x00100000)
 }
 
 enum RegType as u32 {
