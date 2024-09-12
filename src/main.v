@@ -45,6 +45,7 @@ fn main() {
 	graceful_exit('完了しました！')
 }
 
+@[noreturn]
 fn something_happened(message string) {
 	eprintln(message)
 	print('[ENTERキーを押して終了]')
@@ -52,6 +53,7 @@ fn something_happened(message string) {
 	exit(1)
 }
 
+@[noreturn]
 fn graceful_exit(message string) {
 	println(message)
 	print('[ENTERキーを押して終了]')
