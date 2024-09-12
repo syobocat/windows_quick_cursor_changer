@@ -10,7 +10,7 @@ fn C.SystemParametersInfoW(uiAction u32, uiParam u32, pvParam voidptr, fWinIni u
 fn C.GetLastError() u32
 
 fn update_cursor() ! {
-	if !C.SystemParametersInfoW(spi_setcursors, 0, unsafe { nil }, spif_updateinifile | spif_sendchange) {
+	if !C.SystemParametersInfoW(spi_setcursors, 0, 0, spif_updateinifile | spif_sendchange) {
 		status := C.GetLastError()
 		return error('カーソルの更新に失敗しました: コード${status}')
 	}
