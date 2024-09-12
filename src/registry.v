@@ -1,7 +1,5 @@
 module main
 
-import builtin.wchar
-
 #include <windows.h>
 
 enum KeyHandles as u32 {
@@ -44,24 +42,34 @@ enum RegType as u32 {
 	qword                      = 11
 }
 
-fn C.RegOpenKeyExW(hKey voidptr, lpSubKey &wchar.Character, ulOptions u32, samDesired u32, phkResult &voidptr) i32
+type Key = voidptr
 
-fn C.RegSetValueExW(hKey voidptr, lpValueName &wchar.Character, Reserved u32, dwType u32, const_lpData &u8, cbData u32) i32
+fn C.RegOpenKeyExW(hKey voidptr, lpSubKey &u16, ulOptions u32, samDesired u32, phkResult &voidptr) i32
+fn C.RegCloseKey(hKey voidptr) i32
 
-fn set_registry_sz(key KeyHandles, subkey string, name string, value string) ! {
-	handle := voidptr(u32(key))
-	value_wchar := wchar.from_string('${value}\0')
+fn C.RegSetValueExW(hKey voidptr, lpValueName &u16, Reserved u32, dwType u32, const_lpData &u16, cbData u32) i32
+
+fn open_registry(key KeyHandles, subkey string) !Key {
 	mut hkey := unsafe { nil }
-	open_status := C.RegOpenKeyExW(handle, wchar.from_string(subkey), 0, u32(RegAsm.key_write),
-		hkey)
-	if open_status != 0 {
-		return error('レジストリキーのオープンに失敗しました: コード${open_status}')
+	status := C.RegOpenKeyExW(u32(key), subkey.to_wide(), 0, u32(RegAsm.key_write), hkey)
+	if status != 0 {
+		return error('レジストリキーのオープンに失敗しました: コード${status}')
 	}
-	unsafe {
-		set_status := C.RegSetValueExW(hkey, wchar.from_string(name), 0, u32(RegType.sz),
-			value_wchar, wchar.length_in_bytes(value_wchar))
-		if set_status != 0 {
-			return error('レジストリキーの設定に失敗しました: コード${set_status}')
-		}
+
+	return hkey
+}
+
+fn (key Key) set_sz(name string, value string) ! {
+	value_u16 := '${value}\0'.to_wide()
+	status := C.RegSetValueExW(key, name.to_wide(), 0, u32(RegType.sz), value_u16, sizeof(value_u16))
+	if status != 0 {
+		return error('レジストリキーの設定に失敗しました: コード${status}')
+	}
+}
+
+fn (key Key) close() ! {
+	status := C.RegCloseKey(key)
+	if status != 0 {
+		return error('レジストリキーのクローズに失敗しました: コード${status}')
 	}
 }

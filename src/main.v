@@ -40,10 +40,12 @@ fn main() {
 		cursor_files[cursor] = settings.value(cursor.to_lower()).default_to('').string()
 	}
 
+	registry_key := open_registry(.hkey_current_user, r'Control Panel\Cursors')!
 	for registry_name, cursor_file in cursor_files {
 		cursor := os.join_path(cursor_path, cursor_name, cursor_file).replace(r'\', r'\\')
-		set_registry_sz(.hkey_current_user, r'Control Panel\Cursors', registry_name, cursor)!
+		registry_key.set_sz(registry_name, cursor)!
 	}
+	registry_key.close()!
 
 	println('完了しました。再起動や再ログインをするとカーソルが適用されます。')
 	print('[ENTERキーを押して終了]')
