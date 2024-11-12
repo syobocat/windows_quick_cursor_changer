@@ -7,9 +7,34 @@ const cursors = ['Arrow', 'Help', 'AppStarting', 'Wait', 'Crosshair', 'IBeam', '
 	'SizeNS', 'SizeWE', 'SizeNWSE', 'SizeNESW', 'SizeAll', 'UpArrow', 'Hand']
 
 fn main() {
-	// バリデーション
+	// 設定ファイル作成
 	if os.args.len < 2 {
-		println('設定ファイルを.exeファイルにドラッグ&ドロップしてね')
+		print('設定ファイルが与えられませんでした。作成します。 [ENTERキーを押して続行]')
+		os.get_line()
+		cursor_name, toml_string := generate() or {
+			eprintln('エラーが起きました！ ${err}')
+			wait()
+			exit(1)
+		}
+		if !os.exists('settings') {
+			os.mkdir('settings') or {
+				eprintln('設定ファイルを格納するフォルダの作成に失敗しました！ ${err}')
+				wait()
+				exit(1)
+			}
+		}
+		mut f := os.create('settings/${cursor_name}.toml') or {
+			eprintln('設定ファイルの作成に失敗しました！ ${err}')
+			wait()
+			exit(1)
+		}
+		f.write_string(toml_string) or {
+			eprintln('設定ファイルへの書き込みに失敗しました！ ${err}')
+			wait()
+			exit(1)
+		}
+		f.close()
+		println('設定ファイルが作成されました！')
 		wait()
 		exit(0)
 	}

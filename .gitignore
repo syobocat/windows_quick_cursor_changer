@@ -1,7 +1,6 @@
 # Binaries for programs and plugins
 main
-windows_cursor_change_reg_file_generator
-クリックでカーソル適用.reg
+windows_quick_cursor_changer
 *.exe
 *.exe~
 *.so

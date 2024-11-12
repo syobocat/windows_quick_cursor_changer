@@ -1,0 +1,26 @@
+scheme = 1
+@if path.len > 0
+path = '''@{path}'''
+@end
+@if name.len > 0
+name = '''@{name}'''
+@end
+@if cursor_name.len > 0
+cursor_name = '''@{cursor_name}'''
+@end
+
+arrow       = '''@{arrow}'''
+help        = '''@{help}'''
+appstarting = '''@{appstarting}'''
+wait        = '''@{wait}'''
+crosshair   = '''@{crosshair}'''
+ibeam       = '''@{ibeam}'''
+nwpen       = '''@{nwpen}'''
+no          = '''@{no}'''
+sizens      = '''@{sizens}'''
+sizewe      = '''@{sizewe}'''
+sizenwse    = '''@{sizenwse}'''
+sizenesw    = '''@{sizenesw}'''
+sizeall     = '''@{sizeall}'''
+uparrow     = '''@{uparrow}'''
+hand        = '''@{hand}'''
