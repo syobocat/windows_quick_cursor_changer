@@ -1,7 +1,7 @@
 Module {
-	name: 'windows_cursor_change_reg_file_generator'
+	name: 'windows_quick_cursor_changer'
 	description: ''
-	version: '0.0.0'
+	version: '1.2.0'
 	license: 'MIT'
 	dependencies: []
 }
